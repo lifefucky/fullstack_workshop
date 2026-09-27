@@ -1,0 +1,7 @@
+{
+  "profile": "Profile",
+  "model_type_text": "Text",
+  "model_type_code": "Code",
+  "model_type_image": "Image",
+  "WelcomeMessage": "Welcome to AI-Chat!"
+}
