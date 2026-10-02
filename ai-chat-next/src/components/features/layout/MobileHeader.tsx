@@ -1,90 +1,72 @@
 // src/components/features/layout/MobileHeader.tsx
 "use client";
 
-import { FC } from "react";
-import Link from "next/link";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store/store";
+import { FC, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { showNotification } from "@/reducers/notificationReducer";
+import { AppDispatch, RootState } from "@/store/store";
 import { languageActions } from "@/reducers/languageReducer";
-import { localizationService } from "@/services/localizationService";
 import { modelActions } from "@/reducers/modelReducer";
-import { MODEL_OPTIONS, ModelType } from "@/data/ModelOptions";
+import { localizationService } from "@/services/localizationService";
+import { useUserSession } from "@/hooks/useUserSession";
+import { MobileHeaderView } from "./Views/MobileHeaderView";
 
 export interface MobileHeaderProps {
+  onMenuToggle(): void;
   modelType: ModelType;
   selectedModel: string;
-  onMenuToggle: () => void;
 }
 
-export const MobileHeader: FC<MobileHeaderProps> = ({ modelType, selectedModel, onMenuToggle }) => {
+export const MobileHeader: FC<MobileHeaderProps> = ({ onMenuToggle, modelType, selectedModel }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const availableModels = useSelector((state: RootState) => state.availableModels);
+  const { session, status, isLoading } = useUserSession();
+  const [, setIsRefreshing] = useState(false);
+
+  useEffect(() => {
+    if (session) return;
+    if (window.innerWidth < 768) {
+      dispatch(showNotification(localizationService.get("MobileLoginOnly"), "info", 5));
+    }
+  }, [session, dispatch]);
 
   const handleLanguageChange = (lang: "ru" | "en") => {
     dispatch(languageActions.setLanguage(lang));
   };
 
+  const handleModelTypeChange = (type: ModelType) => {
+    dispatch(modelActions.setModelType(type));
+  };
+
+  const handleModelChange = (modelId: string) => {
+    dispatch(modelActions.setModel(modelId));
+  };
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    window.location.reload();
+  };
+
+  if (isLoading || status === "loading") {
+    return (
+      <header className="hidden md:flex items-center justify-between p-4 bg-gray-800 text-white">
+        <div className="animate-pulse">Загрузка...</div>
+      </header>
+    );
+  }
+
   return (
-    <header className="md:hidden flex items-center justify-between bg-gray-800 px-3 py-2 shadow">
-      {/* Кнопка меню */}
-      <button
-        onClick={onMenuToggle}
-        className="p-2 text-white hover:bg-gray-700 rounded"
-        aria-label="Открыть меню"
-      >
-        ☰
-      </button>
-
-      {/* Языковые кнопки */}
-      <div className="flex-1 mx-2 space-y-1">
-        <div className="flex justify-center space-x-1">
-          <button
-            onClick={() => handleLanguageChange("en")}
-            className="px-2 py-1 bg-blue-500 text-white rounded text-xs"
-          >
-            EN
-          </button>
-          <button
-            onClick={() => handleLanguageChange("ru")}
-            className="px-2 py-1 bg-green-500 text-white rounded text-xs"
-          >
-            RU
-          </button>
-        </div>
-
-        {/* Селекторы модели (упрощенная версия для мобилки) */}
-        <div className="flex justify-center space-x-1">
-          <select
-            value={modelType}
-            onChange={e => {
-              const newType = e.target.value as ModelType;
-              dispatch(modelActions.setModelType(newType));
-            }}
-            className="bg-gray-700 text-white text-xs rounded px-1 py-0.5"
-          >
-            <option value="text">{localizationService.get("model_type_text")}</option>
-            <option value="code">{localizationService.get("model_type_code")}</option>
-            <option value="image">{localizationService.get("model_type_image")}</option>
-          </select>
-
-          <select
-            value={selectedModel}
-            onChange={e => {
-              const newModel = e.target.value;
-              dispatch(modelActions.setModel(newModel));
-            }}
-            className="bg-gray-700 text-white text-xs rounded px-1 py-0.5"
-          >
-            {MODEL_OPTIONS[modelType].map(m => (
-              <option key={m.id} value={m.id}>
-                {m.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-      <Link href="#" className="text-white text-lg">
-        🧑
-      </Link>
-    </header>
+    <MobileHeaderView
+      onMenuToggle={onMenuToggle}
+      modelType={modelType}
+      selectedModel={selectedModel}
+      onLanguageChange={handleLanguageChange}
+      onModelTypeChange={handleModelTypeChange}
+      onModelChange={handleModelChange}
+      session={session}
+      status={status}
+      handleRefresh={handleRefresh}
+      availableModels={availableModels}
+    />
   );
 };
