@@ -1,0 +1,55 @@
+### Регистрация пользователя
+POST http://127.0.0.1:8000/api/auth/registration/
+Content-Type: application/json
+
+{
+  "name": "Tester",
+  "email": "your.email@example.com",
+  "password1": "<YOUR_PASSWORD>",
+  "password2": "<YOUR_PASSWORD>"
+}
+
+### Логин пользователя (email должен быть подтверждён)
+POST http://127.0.0.1:8000/api/auth/custom/login/
+Content-Type: application/json
+
+{
+  "email": "your.email@example.com",
+  "password": "<YOUR_PASSWORD>"
+}
+
+### OAuth через Google — синхронизация пользователя
+POST http://127.0.0.1:8000/api/auth/custom/oauth/register-or-login/
+Content-Type: application/json
+
+{
+  "id": "123456789",
+  "name": "Test User",
+  "email": "testuser@example.com",
+  "provider": "google"
+}
+
+### Сброс пароля
+POST http://127.0.0.1:8000/api/auth/password/reset/
+Content-Type: application/json
+
+{
+  "email": "your.email@example.com"
+}
+
+### Обновление access-токена по refresh
+POST http://127.0.0.1:8000/api/auth/refresh/
+Content-Type: application/json
+
+{
+  "refresh": "<YOUR_REFRESH_TOKEN>"
+}
+
+### Проверка токена
+POST http://127.0.0.1:8000/api/auth/token/verify/
+Content-Type: application/json
+
+{
+  "token": "<YOUR_ACCESS_OR_REFRESH_TOKEN>"
+}
+
