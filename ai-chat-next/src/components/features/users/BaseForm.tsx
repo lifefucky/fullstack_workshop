@@ -168,7 +168,7 @@ const BaseForm: React.FC<BaseFormProps> = ({ type, onClose }) => {
 
         <button
           onClick={handleGoogleLogin}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          className="rounded-xl border border-line bg-white px-4 py-2 text-ink hover:bg-surface"
         >
           {localizationService.get("signInWithGoogle")}
         </button>

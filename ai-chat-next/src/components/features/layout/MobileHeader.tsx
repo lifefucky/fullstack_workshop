@@ -13,9 +13,10 @@ import { useModelControls } from "./useModelControls";
 
 export interface MobileHeaderProps {
   onNewChat: () => void;
+  showNewChat: boolean;
 }
 
-export const MobileHeader: FC<MobileHeaderProps> = ({ onNewChat }) => {
+export const MobileHeader: FC<MobileHeaderProps> = ({ onNewChat, showNewChat }) => {
   const dispatch = useDispatch<AppDispatch>();
   const currentLanguage = useSelector((state: RootState) => state.language.current);
   const { session, status, isLoading, userName } = useUserSession();
@@ -45,6 +46,7 @@ export const MobileHeader: FC<MobileHeaderProps> = ({ onNewChat }) => {
   return (
     <MobileHeaderView
       onNewChat={onNewChat}
+      showNewChat={showNewChat}
       currentLanguage={currentLanguage}
       onLanguageChange={lang => dispatch(languageActions.setLanguage(lang))}
       session={session}

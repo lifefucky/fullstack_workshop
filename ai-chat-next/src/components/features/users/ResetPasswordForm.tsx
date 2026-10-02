@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { localizationService } from "@/services/localizationService";
 
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -19,7 +20,7 @@ export default function ResetPasswordForm({ uid, token }: { uid: string; token: 
     setError("");
 
     if (password1 !== password2) {
-      setError("Passwords do not match");
+      setError(localizationService.get("passwordsNotMatch"));
       return;
     }
 
@@ -33,50 +34,50 @@ export default function ResetPasswordForm({ uid, token }: { uid: string; token: 
       setSuccess(true);
       setTimeout(() => router.push("/"), 3000);
     } catch {
-      setError("Invalid token or password requirements not met.");
+      setError(localizationService.get("ResetError"));
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-600">Reset Password</h2>
+    <div className="flex min-h-screen items-center justify-center bg-canvas p-4">
+      <div className="w-full max-w-md rounded-2xl border border-line bg-white p-8 shadow-card">
+        <h2 className="mb-6 text-center text-2xl font-semibold text-ink">
+          {localizationService.get("ResetPasswordTitle")}
+        </h2>
         {success ? (
-          <p className="text-green-600 text-center">
-            Password has been reset successfully! Redirecting to login...
-          </p>
+          <p className="text-center text-ink">{localizationService.get("ResetSuccess")}</p>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-600">
-                New Password
+              <label className="block text-sm font-medium text-mute">
+                {localizationService.get("NewPassword")}
               </label>
               <input
                 type="password"
                 value={password1}
-                onChange={(e) => setPassword1(e.target.value)}
+                onChange={e => setPassword1(e.target.value)}
                 required
-                className="w-full px-4 py-2 border rounded  bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-600"
+                className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-ink outline-none focus:border-accent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-600">
-                Confirm Password
+              <label className="block text-sm font-medium text-mute">
+                {localizationService.get("confirmPassword")}
               </label>
               <input
                 type="password"
                 value={password2}
-                onChange={(e) => setPassword2(e.target.value)}
+                onChange={e => setPassword2(e.target.value)}
                 required
-                className="w-full px-4 py-2 border rounded  bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-600"
+                className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-ink outline-none focus:border-accent"
               />
             </div>
-            {error && <p className="text-red-600 text-sm">{error}</p>}
+            {error && <p className="text-sm text-red-500">{error}</p>}
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+              className="w-full rounded-full bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-blue-600"
             >
-              Reset Password
+              {localizationService.get("ResetPasswordAction")}
             </button>
           </form>
         )}

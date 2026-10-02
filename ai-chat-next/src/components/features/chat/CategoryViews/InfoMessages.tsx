@@ -7,14 +7,13 @@ interface InfoMessagesProps {
 
 export default function InfoMessages({ type }: InfoMessagesProps) {
   const lang = localizationService.getCurrentLanguage() === "ru" ? "ru" : "en";
-  const messages = infoMessages[lang as "ru" | "en"]?.[type] ?? [];
+  const messages = infoMessages[lang]?.[type] ?? [];
 
   return (
-    <div
-      className="space-y-3 text-sm text-ink [&_a]:text-accent [&_a]:underline"
-      dangerouslySetInnerHTML={{
-        __html: messages.map(m => `<p key="${m.id}">${m.text}</p>`).join(""),
-      }}
-    />
+    <div className="space-y-3 text-sm text-ink">
+      {messages.map(message => (
+        <p key={message.id}>{message.text}</p>
+      ))}
+    </div>
   );
 }

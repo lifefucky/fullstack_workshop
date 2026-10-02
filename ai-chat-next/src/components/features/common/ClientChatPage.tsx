@@ -73,7 +73,7 @@ export default function ClientChatPage({ session }: { session: Session | null })
   return (
     <div className="h-screen bg-canvas p-3 sm:p-4 md:p-6">
       <Notification />
-      <Layout onNewChat={() => setSelected(null)}>
+      <Layout onNewChat={() => setSelected(null)} showNewChat={selected !== null}>
         {selected ? (
           <ErrorBoundary>
             <ChatWindowContainer

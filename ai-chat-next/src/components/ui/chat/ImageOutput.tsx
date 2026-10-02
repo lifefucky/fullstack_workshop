@@ -5,7 +5,7 @@ import { formatFileUrl } from "@/utils/formatFileUrl";
 
 export const ImageOutput = ({ url }: { url: string }) => {
   return (
-    <div className="mt-4 w-full max-w-lg mx-auto aspect-square relative animate-fade-in px-4">
+    <div className="relative mt-4 aspect-square w-full max-w-lg animate-fade-in px-4">
       <Image
         src={formatFileUrl(url)}
         alt="AI generated image"

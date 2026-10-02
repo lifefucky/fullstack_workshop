@@ -20,6 +20,7 @@ interface Props {
   registerRef: RefObject<{ toggleVisibility(): void } | null>;
   onLogout: () => void;
   onNewChat: () => void;
+  showNewChat: boolean;
   modelType: ModelType;
   selectedModel: string;
   availableModels: ModelOptions;
@@ -39,6 +40,7 @@ export const DesktopHeaderView: FC<Props> = ({
   registerRef,
   onLogout,
   onNewChat,
+  showNewChat,
   modelType,
   selectedModel,
   availableModels,
@@ -64,13 +66,15 @@ export const DesktopHeaderView: FC<Props> = ({
       </div>
 
       <div className="flex flex-1 justify-center">
-        <button
-          type="button"
-          onClick={onNewChat}
-          className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-600"
-        >
-          {localizationService.get("NewChat")}
-        </button>
+        {showNewChat && (
+          <button
+            type="button"
+            onClick={onNewChat}
+            className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-600"
+          >
+            {localizationService.get("NewChat")}
+          </button>
+        )}
       </div>
 
       <div className="flex min-w-0 flex-1 items-center justify-end gap-3">

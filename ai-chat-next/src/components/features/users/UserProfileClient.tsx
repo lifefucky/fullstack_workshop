@@ -8,8 +8,6 @@ import { signOut } from "next-auth/react";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
 import { AppDispatch } from "@store/store";
-import "@styles/starry_sky_styles.css";
-import { audioService } from "@services/audioService";
 import apiClient from "@services/authClientService";
 import Notification from "@features/common/Notification";
 import { localizationService } from "@services/localizationService";
@@ -24,13 +22,6 @@ export default function UserProfileClient() {
   const [name, setName] = useState("");
   const [saving, setSaving] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-
-  useEffect(() => {
-    audioService.playMusic("/music/track.mp3");
-    return () => {
-      audioService.stopMusic();
-    };
-  }, []);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -68,71 +59,74 @@ export default function UserProfileClient() {
   };
 
   if (!userData) {
-    return <div className="p-8 bg-black">{localizationService.get("LoadingProfile")}</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-canvas text-mute">
+        {localizationService.get("LoadingProfile")}
+      </div>
+    );
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-black">
-      <div id="stars" className="absolute inset-0"></div>
-      <div id="stars2" className="absolute inset-0"></div>
-      <div id="stars3" className="absolute inset-0"></div>
-      <div/>
+    <div className="min-h-screen bg-canvas p-4 md:p-6">
+      <Notification />
+      <div className="mx-auto max-w-lg">
+        <Link
+          href="/"
+          className="inline-flex rounded-full border border-line bg-white px-4 py-2 text-sm text-ink hover:bg-surface"
+        >
+          {localizationService.get("ToHome")}
+        </Link>
 
-      <div className="relative z-10 px-4 py-6 text-gray-200">
-        <Notification />
-
-        <div className="mt-8">
-          <Link
-            href="/"
-            className="inline-block px-4 py-2 bg-indigo-600 bg-opacity-80 text-white rounded-lg hover:bg-indigo-700 transition"
-          >
-            {localizationService.get("ToHome")}
-          </Link>
-        </div>
-
-        <h1 className="mt-6 text-4xl font-extrabold text-white drop-shadow-lg">
+        <h1 className="mt-6 text-3xl font-semibold tracking-tight text-ink">
           {localizationService.get("YourProfile")}
         </h1>
 
-        <div className="mt-4 p-6 bg-opacity-50 rounded-2xl shadow-xl max-w-md">
-          <p>
-            📧 <strong className="text-gray-100">Email:</strong> {userData.email}
-          </p>
+        <div className="mt-6 space-y-5 rounded-2xl border border-line bg-white p-6 shadow-sm">
+          <div>
+            <p className="text-sm text-mute">Email</p>
+            <p className="mt-1 text-ink">{userData.email}</p>
+          </div>
 
-          <p className="mt-4">
-            🧑 <strong className="text-gray-100">{localizationService.get("Name")}</strong>{" "}
-            {editingName ? (
-              <input
-                value={name}
-                onChange={e => setName(e.target.value)}
-                onBlur={updateName}
-                onKeyDown={e => {
-                  if (e.key === "Enter") updateName();
-                  if (e.key === "Escape") {
-                    setName(userData.name);
-                    setEditingName(false);
-                  }
-                }}
-                disabled={saving}
-                className="px-2 py-1 border border-gray-700 rounded-lg bg-gray-800 text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                autoFocus
-              />
-            ) : (
-              <span
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-sm text-mute">{localizationService.get("Name")}</p>
+              {editingName ? (
+                <input
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  onBlur={updateName}
+                  onKeyDown={e => {
+                    if (e.key === "Enter") updateName();
+                    if (e.key === "Escape") {
+                      setName(userData.name);
+                      setEditingName(false);
+                    }
+                  }}
+                  disabled={saving}
+                  className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-ink outline-none focus:border-accent"
+                  autoFocus
+                />
+              ) : (
+                <p className="mt-1 text-ink">
+                  {userData.name || localizationService.get("NotSpecified")}
+                </p>
+              )}
+            </div>
+            {!editingName && (
+              <button
+                type="button"
                 onClick={() => setEditingName(true)}
-                className="underline cursor-pointer hover:text-indigo-300 transition"
-                title={localizationService.get("ChangeName")}
+                className="shrink-0 rounded-full border border-line px-3 py-1 text-sm text-ink hover:bg-surface"
               >
-                {userData.name || localizationService.get("NotSpecified")}
-              </span>
+                {localizationService.get("ChangeName")}
+              </button>
             )}
-          </p>
+          </div>
 
-          <p className="mt-4">
-            🎯{" "}
-            <strong className="text-gray-100">{localizationService.get("AskedQuestions")}</strong>{" "}
-            {userData.quantity}
-          </p>
+          <div>
+            <p className="text-sm text-mute">{localizationService.get("AskedQuestions")}</p>
+            <p className="mt-1 text-ink">{userData.quantity}</p>
+          </div>
         </div>
       </div>
     </div>

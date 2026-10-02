@@ -12,9 +12,10 @@ import { useModelControls } from "./useModelControls";
 
 export interface DesktopHeaderProps {
   onNewChat: () => void;
+  showNewChat: boolean;
 }
 
-export const DesktopHeader: FC<DesktopHeaderProps> = ({ onNewChat }) => {
+export const DesktopHeader: FC<DesktopHeaderProps> = ({ onNewChat, showNewChat }) => {
   const dispatch = useDispatch<AppDispatch>();
   const currentLanguage = useSelector((state: RootState) => state.language.current);
   const { session, userName } = useUserSession();
@@ -38,6 +39,7 @@ export const DesktopHeader: FC<DesktopHeaderProps> = ({ onNewChat }) => {
       registerRef={registerRef}
       onLogout={handleLogout}
       onNewChat={onNewChat}
+      showNewChat={showNewChat}
       modelType={model.modelType}
       selectedModel={model.selectedModel}
       availableModels={model.availableModels}

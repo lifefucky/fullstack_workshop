@@ -11,6 +11,7 @@ import { ModelPicker } from "./ModelPicker";
 
 interface MobileHeaderViewProps {
   onNewChat: () => void;
+  showNewChat: boolean;
   currentLanguage: "ru" | "en";
   onLanguageChange(lang: "ru" | "en"): void;
   session: Session | null;
@@ -26,6 +27,7 @@ interface MobileHeaderViewProps {
 
 export const MobileHeaderView: FC<MobileHeaderViewProps> = ({
   onNewChat,
+  showNewChat,
   currentLanguage,
   onLanguageChange,
   session,
@@ -45,13 +47,15 @@ export const MobileHeaderView: FC<MobileHeaderViewProps> = ({
         ✦
       </span>
 
-      <button
-        type="button"
-        onClick={onNewChat}
-        className="rounded-full bg-accent px-3 py-1.5 text-sm font-medium text-white"
-      >
-        {localizationService.get("NewChat")}
-      </button>
+      {showNewChat && (
+        <button
+          type="button"
+          onClick={onNewChat}
+          className="rounded-full bg-accent px-3 py-1.5 text-sm font-medium text-white"
+        >
+          {localizationService.get("NewChat")}
+        </button>
+      )}
 
       <div className="ml-auto flex items-center gap-1">
         <button

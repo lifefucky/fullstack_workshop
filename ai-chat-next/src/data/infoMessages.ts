@@ -1,46 +1,62 @@
 export const infoMessages = {
-    ru: {
-      auth: [
-        {
-          id: "createCategory",
-          text: `📃 Создайте <span class="text-blue-500 font-semibold">«Новую рубрику»</span> и отправьте запрос реальной модели`,
-        },
-        {
-          id: "exitDemo",
-          text: `<span class="text-white">⏏</span> По кнопке <span class="text-red-500 font-semibold">«Выход»</span> можно вернуться в демо версию`,
-        },
-        {
-          id: "limits",
-          text: `💳 Количество запросов можно увеличить после тест-оплаты на странице пользователя 📍`,
-        },
-      ],
-      demo: [
-        {
-          id: "adminRefresh",
-          text: `💡 Отправить запросы можно и как <span class="font-semibold text-blue-500">админ</span>, просто обновив страницу в браузере`,
-        },
-      ],
-    },
-    en: {
-      auth: [
-        {
-          id: "createCategory",
-          text: `📃 Create a <span class="text-blue-500 font-semibold">“New Category”</span> and send a request to the real model`,
-        },
-        {
-          id: "exitDemo",
-          text: `<span class="text-white">⏏</span> Press <span class="text-red-500 font-semibold">“Exit”</span> to return to demo version`,
-        },
-        {
-          id: "limits",
-          text: `💳 You can increase request limits after a test payment on the user page 📍`,
-        },
-      ],
-      demo: [
-        {
-          id: "adminRefresh",
-          text: `💡 You can send requests as <span class="font-semibold text-white">admin</span> by simply refreshing the page`,
-        },
-      ],
-    },
-  };
+  ru: {
+    auth: [
+      {
+        id: "start",
+        text: "Напишите сообщение внизу — откроется новый чат.",
+      },
+      {
+        id: "open",
+        text: "Карточки выше открывают уже начатые чаты.",
+      },
+      {
+        id: "header",
+        text: "Язык и модель переключаются в шапке.",
+      },
+      {
+        id: "sound",
+        text: "Громкость музыки и озвучки настраивается кнопкой «Звук» внутри чата.",
+      },
+    ],
+    demo: [
+      {
+        id: "samples",
+        text: "Это примеры чатов, их можно открыть без своего аккаунта.",
+      },
+      {
+        id: "own",
+        text: "Чтобы писать свои сообщения, войдите или зарегистрируйтесь.",
+      },
+    ],
+  },
+  en: {
+    auth: [
+      {
+        id: "start",
+        text: "Type a message below to start a new chat.",
+      },
+      {
+        id: "open",
+        text: "The cards above open chats you already started.",
+      },
+      {
+        id: "header",
+        text: "Language and model are switched in the header.",
+      },
+      {
+        id: "sound",
+        text: "Music and speech volume are in the Sound button inside a chat.",
+      },
+    ],
+    demo: [
+      {
+        id: "samples",
+        text: "These are sample chats. You can open them without an account.",
+      },
+      {
+        id: "own",
+        text: "Log in or register to write your own messages.",
+      },
+    ],
+  },
+};

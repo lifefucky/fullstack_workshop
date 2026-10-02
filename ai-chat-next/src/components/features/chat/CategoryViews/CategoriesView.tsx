@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import CategoryCard from "./CategoryCard";
 import { localizationService } from "@/services/localizationService";
-import InfoMessages from "./InfoMessages";
+import AboutPanel from "./AboutPanel";
 
 interface CategoriesViewProps {
   categories?: Array<{ id: string; name: string }>;
@@ -19,8 +18,6 @@ export default function CategoriesView({
   onSelect,
   onRetry,
 }: CategoriesViewProps) {
-  const [expandedInfo, setExpandedInfo] = useState(false);
-
   if (isLoading) {
     return <div className="py-8 text-center text-mute">{localizationService.get("LoadingCategories")}</div>;
   }
@@ -63,29 +60,7 @@ export default function CategoriesView({
         </div>
       )}
 
-      <div className="mx-auto mt-8 max-w-3xl">
-        <div className="rounded-2xl border border-line bg-white px-4 py-3 text-sm text-mute">
-          <button
-            type="button"
-            onClick={() => setExpandedInfo(!expandedInfo)}
-            className="text-sm font-medium text-ink"
-          >
-            {expandedInfo ? localizationService.get("HideInfo") : localizationService.get("ShowInfo")}
-          </button>
-          <AnimatePresence initial={false}>
-            {expandedInfo && (
-              <motion.div
-                className="mt-3 overflow-hidden"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-              >
-                <InfoMessages type="auth" />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
+      <AboutPanel type="auth" />
     </motion.div>
   );
 }
