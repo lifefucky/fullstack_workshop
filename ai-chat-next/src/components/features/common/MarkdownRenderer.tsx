@@ -1,7 +1,7 @@
-// src/components/features/common/MarkdownRenderer.tsx
+// ai-chat-next/src/components/features/common/MarkdownRenderer.tsx
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -10,39 +10,61 @@ interface MarkdownRendererProps {
   content: string;
 }
 
-type CodeProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+type CodeComponentProps = {
   inline?: boolean;
   className?: string;
+  children?: React.ReactNode;
 };
 
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
+  const [remarkGfm, setRemarkGfm] = useState<typeof import("remark-gfm")["default"] | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth >= 768) {
+      import("remark-gfm").then(mod => {
+        setRemarkGfm(() => mod.default);
+      });
+    }
+  }, []);
+
   return (
     <ReactMarkdown
+      {...(remarkGfm && { remarkPlugins: [remarkGfm] })}
       components={{
-        ul: props => <ul className="list-disc pl-5 space-y-1" {...props} />,
-        ol: props => <ol className="list-decimal pl-5 space-y-1" {...props} />,
+        ul: props => <ul className="list-disc pl-5" {...props} />,
+        ol: props => <ol className="list-decimal pl-5" {...props} />,
         li: props => <li className="my-1" {...props} />,
-        code: ({ inline, className, children, ...props }: CodeProps) => {
-          const match = /language-(\w+)/.exec(className || "");
-
-          if (!inline && match) {
+        code: ({ inline, className, children, ...props }: CodeComponentProps) => {
+          if (inline) {
             return (
-              <div className="my-4 rounded-md overflow-hidden">
+              <code
+                className={`${className} bg-gray-700 px-1 py-0.5 rounded text-xs sm:text-sm break-anywhere`}
+                {...props}
+              >
+                {children}
+              </code>
+            );
+          }
+
+          const match = /language-(\w+)/.exec(className || "");
+          if (match) {
+            return (
+              <div className="w-full overflow-x-auto">
                 <SyntaxHighlighter
                   style={atomDark}
                   language={match[1]}
                   PreTag="div"
-                  wrapLongLines
+                  wrapLongLines={true}
+                  wrapLines={true}
                   customStyle={{
+                    fontSize: "0.85rem",
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
                     margin: 0,
-                    padding: "1rem",
-                    fontSize: "0.9rem",
-                    lineHeight: "1.5",
-                    backgroundColor: "#1d1f21",
                   }}
                   codeTagProps={{
                     style: {
-                      fontFamily: "monospace",
+                      fontSize: "inherit",
                     },
                   }}
                 >
@@ -53,14 +75,15 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
           }
 
           return (
-            <code
-              className="bg-gray-700 px-1.5 py-0.5 rounded text-sm font-mono break-words"
+            <pre
+              className="bg-gray-800 p-2 rounded-md text-gray-100 text-xs sm:text-sm md:text-base whitespace-pre-wrap break-anywhere"
               {...props}
             >
-              {children}
-            </code>
+              <code>{children}</code>
+            </pre>
           );
         },
+        p: p => <div {...p}>{p.children}</div>,
       }}
     >
       {content}
