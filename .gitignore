@@ -1,5 +1,22 @@
-tutorial.md
+ai-chat-next/tutorial.md
+ai-chat-django/tutorial.md
 frontend.md
 .cursor/
 ai-chat-next/CLAUDE.md
 ai-chat-next/AGENTS.md
+.venv/
+.env
+ai-chat-django/media/
+navigation.md
+
+# python / django
+__pycache__/
+*.pyc
+ai-chat-django/db.sqlite3
+
+# local requests with secrets
+requests/user.rest
+
+# nested next.js dev cache (when run from ai-chat-next/ai-chat-next)
+ai-chat-next/ai-chat-next/.next/
+
