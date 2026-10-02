@@ -27,6 +27,7 @@ interface ChatWindowViewProps {
   scrollToBottom: () => void;
   topRef: React.RefObject<HTMLDivElement | null>;
   bottomRef: React.RefObject<HTMLDivElement | null>;
+  onBack?: () => void;
 }
 
 export const ChatWindowView = (props: ChatWindowViewProps) => {
@@ -36,18 +37,19 @@ export const ChatWindowView = (props: ChatWindowViewProps) => {
 
   if (props.error) {
     return (
-      <div className="flex-1 flex items-center justify-center text-red-500 p-4">
+      <div className="flex flex-1 items-center justify-center p-4 text-red-500">
         {localizationService.get("ErrorLoadingMessages")}
       </div>
     );
   }
 
   return (
-      <div className="flex flex-col flex-1 min-h-0">
+      <div className="flex min-h-0 flex-1 flex-col">
       <ChatHeader
         categoryName={props.categoryName}
         audioModalOpen={props.audioModalOpen}
         setAudioModalOpen={props.setAudioModalOpen}
+        onBack={props.onBack}
       />
       <AnimatePresence mode="wait">
         <motion.div

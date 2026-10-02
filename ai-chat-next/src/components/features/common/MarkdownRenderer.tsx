@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 interface MarkdownRendererProps {
   content: string;
@@ -15,6 +15,13 @@ type CodeComponentProps = {
   className?: string;
   children?: React.ReactNode;
 };
+
+function keepLineBreaks(content: string) {
+  return content
+    .split(/(```[\s\S]*?```)/g)
+    .map((part, index) => (index % 2 === 1 ? part : part.replace(/\n/g, "  \n")))
+    .join("");
+}
 
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   const [remarkGfm, setRemarkGfm] = useState<typeof import("remark-gfm")["default"] | null>(null);
@@ -38,7 +45,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
           if (inline) {
             return (
               <code
-                className={`${className} bg-gray-700 px-1 py-0.5 rounded text-xs sm:text-sm break-anywhere`}
+                className={`${className} rounded bg-surface px-1 py-0.5 text-xs text-ink sm:text-sm break-anywhere`}
                 {...props}
               >
                 {children}
@@ -49,9 +56,9 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
           const match = /language-(\w+)/.exec(className || "");
           if (match) {
             return (
-              <div className="w-full overflow-x-auto">
+              <div className="w-full overflow-x-auto rounded-xl border border-line">
                 <SyntaxHighlighter
-                  style={atomDark}
+                  style={oneLight}
                   language={match[1]}
                   PreTag="div"
                   wrapLongLines={true}
@@ -61,6 +68,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
                     whiteSpace: "pre-wrap",
                     wordBreak: "break-word",
                     margin: 0,
+                    background: "#f6f7f9",
                   }}
                   codeTagProps={{
                     style: {
@@ -76,7 +84,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
 
           return (
             <pre
-              className="bg-gray-800 p-2 rounded-md text-gray-100 text-xs sm:text-sm md:text-base whitespace-pre-wrap break-anywhere"
+              className="whitespace-pre-wrap break-anywhere rounded-xl border border-line bg-surface p-3 text-xs text-ink sm:text-sm md:text-base"
               {...props}
             >
               <code>{children}</code>
@@ -86,7 +94,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
         p: p => <div {...p}>{p.children}</div>,
       }}
     >
-      {content}
+      {keepLineBreaks(content)}
     </ReactMarkdown>
   );
 };

@@ -6,127 +6,108 @@ import Link from "next/link";
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import { localizationService } from "@/services/localizationService";
+import { UserAvatar } from "./UserAvatar";
+import { ModelPicker } from "./ModelPicker";
 
 interface MobileHeaderViewProps {
-  onMenuToggle(): void;
-  modelType: ModelType;
-  selectedModel: string;
+  onNewChat: () => void;
+  currentLanguage: "ru" | "en";
   onLanguageChange(lang: "ru" | "en"): void;
-  onModelTypeChange: (type: ModelType) => void;
-  onModelChange: (id: string) => void;
   session: Session | null;
+  userName: string;
   status: "authenticated" | "unauthenticated" | "loading";
   handleRefresh: () => void;
+  modelType: ModelType;
+  selectedModel: string;
   availableModels: ModelOptions;
+  onModelTypeChange: (type: ModelType) => void;
+  onModelChange: (id: string) => void;
 }
 
 export const MobileHeaderView: FC<MobileHeaderViewProps> = ({
-  onMenuToggle,
-  modelType,
-  selectedModel,
+  onNewChat,
+  currentLanguage,
   onLanguageChange,
-  onModelTypeChange,
-  onModelChange,
   session,
+  userName,
   status,
   handleRefresh,
+  modelType,
+  selectedModel,
   availableModels,
+  onModelTypeChange,
+  onModelChange,
 }) => {
   return (
-    <header className="md:hidden flex items-center justify-between bg-gray-800 px-3 py-2 shadow">
-      {/* Левая часть (меню) */}
+    <header className="flex shrink-0 flex-col gap-2 border-b border-line bg-white px-3 py-2.5 md:hidden">
+      <div className="flex items-center gap-2">
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line text-sm text-ink">
+        ✦
+      </span>
+
       <button
-        onClick={onMenuToggle}
-        className="p-2 text-white hover:bg-gray-700 rounded"
-        aria-label="Open menu"
+        type="button"
+        onClick={onNewChat}
+        className="rounded-full bg-accent px-3 py-1.5 text-sm font-medium text-white"
       >
-        ☰
+        {localizationService.get("NewChat")}
       </button>
 
-      {/* Центральная часть (языки и модели) */}
-      <div className="flex-1 mx-2 space-y-1">
-        <div className="flex justify-center space-x-1">
-          <button
-            onClick={() => onLanguageChange("en")}
-            className="px-2 py-1 bg-blue-500 text-white rounded text-xs"
-          >
-            EN
-          </button>
-          <button
-            onClick={() => onLanguageChange("ru")}
-            className="px-2 py-1 bg-green-500 text-white rounded text-xs"
-          >
-            RU
-          </button>
-          {session && (
-            <Link href="/user" className="text-white text-lg">
-              🧑
-            </Link>
-          )}
-        </div>
-        <div className="flex justify-center space-x-1">
-          {/* Первый select (тип модели) */}
-          <div className="relative flex-1 min-w-[50px]">
-            <select
-              value={modelType}
-              onChange={e => onModelTypeChange(e.target.value as ModelType)}
-              className="bg-gray-700 text-white text-xs rounded pl-2 pr-6 py-0.5 w-full appearance-none"
-            >
-              <option value="text">{localizationService.get("Texts")}</option>
-              <option value="code">{localizationService.get("Codes")}</option>
-              <option value="image">{localizationService.get("Images")}</option>
-            </select>
-            <div className="absolute inset-y-0 right-1 flex items-center pointer-events-none">
-              <span className="text-gray-400 text-xs">▼</span>
-            </div>
-          </div>
+      <div className="ml-auto flex items-center gap-1">
+        <button
+          type="button"
+          onClick={() => onLanguageChange("en")}
+          className={`px-1.5 text-xs ${currentLanguage === "en" ? "font-semibold text-ink" : "text-mute"}`}
+        >
+          EN
+        </button>
+        <button
+          type="button"
+          onClick={() => onLanguageChange("ru")}
+          className={`px-1.5 text-xs ${currentLanguage === "ru" ? "font-semibold text-ink" : "text-mute"}`}
+        >
+          RU
+        </button>
 
-          {/* Второй select (конкретная модель) */}
-          <div className="relative flex-1 min-w-[100px]">
-            <select
-              value={selectedModel}
-              onChange={e => onModelChange(e.target.value)}
-              className="bg-gray-700 text-white text-xs rounded pl-2 pr-6 py-0.5 w-full appearance-none"
-            >
-              {availableModels[modelType].map(m => (
-                <option key={m.id} value={m.id}>
-                  {m.name}
-                </option>
-              ))}
-            </select>
-            <div className="absolute inset-y-0 right-1 flex items-center pointer-events-none">
-              <span className="text-gray-400 text-xs">▼</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Правая часть (кнопки) */}
-      <div className="w-8 flex justify-end">
         {status === "loading" ? (
-          <span className="p-2 opacity-50">⟳</span>
+          <span className="px-2 text-mute">⟳</span>
         ) : session ? (
-          <button
-            onClick={() => {
-              localStorage.removeItem("auto-guest-login");
-              sessionStorage.setItem("justSignedOutAt", Date.now().toString());
-              signOut();
-            }}
-            className="p-2 text-white hover:bg-gray-700 rounded"
-            aria-label="Sign out"
-          >
-            ⏏
-          </button>
+          <>
+            <Link href="/user" aria-label={localizationService.get("profile")}>
+              <UserAvatar name={userName} size="sm" />
+            </Link>
+            <button
+              type="button"
+              onClick={() => {
+                localStorage.removeItem("auto-guest-login");
+                sessionStorage.setItem("justSignedOutAt", Date.now().toString());
+                signOut();
+              }}
+              className="px-1 text-xs text-mute"
+              aria-label={localizationService.get("Logout")}
+            >
+              {localizationService.get("Logout")}
+            </button>
+          </>
         ) : (
           <button
+            type="button"
             onClick={handleRefresh}
-            className={"p-2 text-white hover:bg-gray-700 rounded"}
+            className="px-2 text-ink"
             aria-label="Refresh"
           >
             ⟳
           </button>
         )}
+        </div>
       </div>
+      <ModelPicker
+        modelType={modelType}
+        selectedModel={selectedModel}
+        availableModels={availableModels}
+        onModelTypeChange={onModelTypeChange}
+        onModelChange={onModelChange}
+      />
     </header>
   );
 };

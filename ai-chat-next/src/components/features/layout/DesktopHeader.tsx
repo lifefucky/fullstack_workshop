@@ -5,29 +5,22 @@ import { FC, useRef } from "react";
 import { signOut } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import { modelActions } from "@/reducers/modelReducer";
 import { languageActions } from "@/reducers/languageReducer";
 import { useUserSession } from "@/hooks/useUserSession";
 import { DesktopHeaderView } from "./Views/DesktopHeaderView";
+import { useModelControls } from "./useModelControls";
 
 export interface DesktopHeaderProps {
-  modelType: ModelType;
-  selectedModel: string;
+  onNewChat: () => void;
 }
 
-export const DesktopHeader: FC<DesktopHeaderProps> = ({
-  modelType,
-  selectedModel,
-}) => {
+export const DesktopHeader: FC<DesktopHeaderProps> = ({ onNewChat }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const availableModels = useSelector((state: RootState) => state.availableModels);
+  const currentLanguage = useSelector((state: RootState) => state.language.current);
   const { session, userName } = useUserSession();
+  const model = useModelControls();
   const loginRef = useRef<{ toggleVisibility(): void } | null>(null);
   const registerRef = useRef<{ toggleVisibility(): void } | null>(null);
-
-  const handleLanguageChange = (lang: "ru" | "en") => {
-    dispatch(languageActions.setLanguage(lang));
-  };
 
   const handleLogout = () => {
     localStorage.removeItem("auto-guest-login");
@@ -37,17 +30,19 @@ export const DesktopHeader: FC<DesktopHeaderProps> = ({
 
   return (
     <DesktopHeaderView
-      modelType={modelType}
-      selectedModel={selectedModel}
       session={session}
       userName={userName}
-      onLanguageChange={handleLanguageChange}
-      onModelTypeChange={type => dispatch(modelActions.setModelType(type))}
-      onModelChange={id => dispatch(modelActions.setModel(id))}
+      currentLanguage={currentLanguage}
+      onLanguageChange={lang => dispatch(languageActions.setLanguage(lang))}
       loginRef={loginRef}
       registerRef={registerRef}
       onLogout={handleLogout}
-      availableModels={availableModels}
+      onNewChat={onNewChat}
+      modelType={model.modelType}
+      selectedModel={model.selectedModel}
+      availableModels={model.availableModels}
+      onModelTypeChange={model.onModelTypeChange}
+      onModelChange={model.onModelChange}
     />
   );
 };

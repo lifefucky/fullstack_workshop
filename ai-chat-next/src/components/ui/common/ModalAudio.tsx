@@ -11,16 +11,16 @@ interface ModalProps {
 
 const ModalAudio: FC<ModalProps> = ({ onClose, title, children }) => (
   <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-    <div className="bg-gray-800 rounded-lg shadow-lg w-11/12 max-w-md">
+    <div className="w-11/12 max-w-md rounded-2xl bg-white text-ink shadow-card">
       {title && (
-        <div className="px-4 py-2 border-b">
+        <div className="border-b border-line px-4 py-3">
           <h3 className="text-lg font-semibold">{title}</h3>
         </div>
       )}
       <div>{children}</div>
       <div className="p-4 border-t text-right">
         <button
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+          className="rounded-full bg-accent px-4 py-2 text-sm text-white hover:bg-blue-600"
           onClick={onClose}
         >
           {localizationService.get("Close")}

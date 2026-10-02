@@ -33,6 +33,7 @@ interface Message {
 interface ChatWindowProps {
   categoryId: string;
   categoryName: string;
+  onBack?: () => void;
 }
 
 interface ISpeechRecognition extends EventTarget {

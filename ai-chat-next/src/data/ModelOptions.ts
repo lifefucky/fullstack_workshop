@@ -10,7 +10,5 @@ export const MODEL_OPTIONS: Record<ModelType, { id: string; name: string }[]> = 
     { id: "deepseek_prover", name: "DeepSeek Prover" },
     { id: "qwen3_coder", name: "Qwen3" },
   ],
-  image: [
-    { id: "flux_schnell_free", name: "Flux.1" },
-  ],
+  image: [],
 };

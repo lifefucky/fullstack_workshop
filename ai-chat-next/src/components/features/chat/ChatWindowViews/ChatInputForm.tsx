@@ -9,6 +9,7 @@ interface ChatInputFormProps {
   isSending: boolean;
   startListening: () => void;
   sendButtonRef: React.RefObject<HTMLButtonElement | null>;
+  locked?: boolean;
 }
 
 export const ChatInputForm = ({
@@ -18,50 +19,75 @@ export const ChatInputForm = ({
   isSending,
   startListening,
   sendButtonRef,
+  locked = false,
 }: ChatInputFormProps) => {
   const formRef = useRef<HTMLFormElement>(null);
+  const cannotSend = locked || isSending || !input.trim();
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      formRef.current?.requestSubmit();
+      if (!locked) formRef.current?.requestSubmit();
     }
   };
 
   return (
-    <form 
+    <form
       ref={formRef}
-      onSubmit={send} 
-      className="flex items-center border-t bg-white p-4"
+      onSubmit={event => {
+        if (locked) {
+          event.preventDefault();
+          return;
+        }
+        send(event);
+      }}
+      className="px-4 pb-4 pt-2 md:px-6"
     >
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={localizationService.get("Your question...")}
-        className="flex-1 border bg-white rounded-l px-3 py-2 text-gray-700 focus:outline-none"
-        disabled={isSending}
-      />
-      
-      <button
-        type="button"
-        onClick={startListening}
-        className="ml-2 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        title="Voice input"
-        disabled={isSending}
-      >
-        🎤
-      </button>
-      
-      <button
-        ref={sendButtonRef}
-        type="submit"
-        className="ml-2 px-4 py-2 bg-green-500 text-white rounded-r hover:bg-green-600 disabled:opacity-50"
-        disabled={isSending || !input.trim()}
-      >
-        {isSending ? "Sending…" : "Send"}
-      </button>
+      <div className="mx-auto w-full max-w-3xl rounded-[24px] border border-line bg-white p-3 shadow-sm">
+        <input
+          type="text"
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={
+            locked
+              ? localizationService.get("ChooseChat")
+              : localizationService.get("Your question...")
+          }
+          className="w-full bg-transparent px-2 py-2 text-ink outline-none placeholder:text-mute"
+          disabled={isSending || locked}
+        />
+        <div className="mt-1 flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={startListening}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-line text-ink hover:bg-surface disabled:opacity-40"
+            title="Voice input"
+            disabled={isSending || locked}
+            aria-label="Voice input"
+          >
+            <MicIcon />
+          </button>
+          <button
+            ref={sendButtonRef}
+            type="submit"
+            className="rounded-full bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 disabled:opacity-40"
+            disabled={cannotSend}
+          >
+            {isSending ? "…" : localizationService.get("Send")}
+          </button>
+        </div>
+      </div>
     </form>
   );
 };
+
+function MicIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M6 11a6 6 0 0 0 12 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M12 17v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}

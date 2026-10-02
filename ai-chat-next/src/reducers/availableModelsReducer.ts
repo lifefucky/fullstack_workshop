@@ -9,7 +9,7 @@ interface AvailableModelsState {
 const initialState: AvailableModelsState = {
   text: [],
   code: [],
-  image: [{ id: "flux_schnell_free", name: "Flux" }],
+  image: [],
 };
 
 export const availableModelsSlice = createSlice({
@@ -17,16 +17,23 @@ export const availableModelsSlice = createSlice({
   initialState,
   reducers: {
     setAvailableModels: (state, action: PayloadAction<{
-      text_models: Array<{ brand: string; model_id: string }>;
-      code_models: Array<{ brand: string; model_id: string }>;
+      text_models: Array<{ brand: string; model_id: string; name?: string }>;
+      code_models: Array<{ brand: string; model_id: string; name?: string }>;
+      image_models?: Array<{ brand: string; model_id: string; name?: string }>;
     }>) => {
+      const label = (model: { brand: string; name?: string }) =>
+        model.name || model.brand.charAt(0).toUpperCase() + model.brand.slice(1);
       state.text = action.payload.text_models.map(m => ({
         id: m.model_id,
-        name: m.brand.charAt(0).toUpperCase() + m.brand.slice(1),
+        name: label(m),
       }));
       state.code = action.payload.code_models.map(m => ({
         id: m.model_id,
-        name: m.brand.charAt(0).toUpperCase() + m.brand.slice(1),
+        name: label(m),
+      }));
+      state.image = (action.payload.image_models ?? []).map(m => ({
+        id: m.model_id,
+        name: label(m),
       }));
     },
   },

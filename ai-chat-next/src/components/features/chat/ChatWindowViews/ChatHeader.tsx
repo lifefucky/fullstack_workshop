@@ -7,23 +7,35 @@ interface ChatHeaderProps {
   categoryName: string;
   audioModalOpen: boolean;
   setAudioModalOpen: (value: boolean) => void;
+  onBack?: () => void;
 }
 
 export const ChatHeader = ({
   categoryName,
   audioModalOpen,
   setAudioModalOpen,
+  onBack,
 }: ChatHeaderProps) => (
   <>
-    <div className="p-4 border-b flex items-center justify-between bg-black">
-      <h2 className="text-2xl font-bold break-words max-w-[70%] whitespace-normal line-clamp-2 text-white">
-        {categoryName}
-      </h2>
+    <div className="flex items-center justify-between gap-3 px-4 py-3 md:px-6">
+      <div className="flex min-w-0 items-center gap-3">
+        {onBack && (
+          <button
+            type="button"
+            onClick={onBack}
+            className="shrink-0 rounded-full border border-line bg-white px-3 py-1 text-sm text-ink hover:bg-surface"
+          >
+            ← {localizationService.get("Back")}
+          </button>
+        )}
+        <h2 className="truncate text-lg font-semibold text-ink">{categoryName}</h2>
+      </div>
       <button
-        className="px-3 py-1 bg-gray-500 text-white rounded hover:bg-blue-600 whitespace-nowrap"
+        type="button"
+        className="shrink-0 rounded-full border border-line bg-white px-3 py-1 text-sm text-ink hover:bg-surface"
         onClick={() => setAudioModalOpen(true)}
       >
-        🔊 {localizationService.get("AudioSettings")}
+        {localizationService.get("AudioSettings")}
       </button>
     </div>
 

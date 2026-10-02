@@ -9,7 +9,7 @@ interface AuthRequiredViewProps {
 export default function AuthRequiredView({ onSelect }: AuthRequiredViewProps) {
   return (
     <>
-      <div className="p-4 text-gray-600">
+      <div className="mb-6 text-center text-sm text-mute">
         {localizationService.get("Please")}{" "}
         <Link href="/api/auth/signin" className="text-blue-600 hover:underline">
           {localizationService.get("LogIn,")}

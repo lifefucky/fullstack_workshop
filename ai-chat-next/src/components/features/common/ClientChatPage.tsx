@@ -5,9 +5,9 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Session } from "next-auth";
 import { signIn } from "next-auth/react";
-import { localizationService } from "@/services/localizationService";
 import { Layout } from "@features/layout/Layout";
 import ChatWindowContainer from "@features/chat/ChatWindowContainer";
+import HomeScreen from "@features/chat/HomeScreen";
 import { RootState } from "@/store/store";
 import Notification from "@features/common/Notification";
 import useBackendWakeUp from "@/hooks/useBackendWakeUp";
@@ -54,38 +54,37 @@ export default function ClientChatPage({ session }: { session: Session | null })
 
   if (isWakingUp) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-black">
+      <div className="flex h-screen flex-1 items-center justify-center bg-canvas">
         <ChatSkeleton />
-        <span className="ml-2 text-gray-600">Пробуждаем сервер, ждем…</span>
+        <span className="ml-2 text-mute">Пробуждаем сервер, ждем…</span>
       </div>
     );
   }
 
   if (isLoadingModels) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-black">
+      <div className="flex h-screen flex-1 items-center justify-center bg-canvas">
         <ChatSkeleton />
-        <span className="ml-2 text-gray-600">Загружаем модели..</span>
+        <span className="ml-2 text-mute">Загружаем модели..</span>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-screen bg-black">
+    <div className="h-screen bg-canvas p-3 sm:p-4 md:p-6">
       <Notification />
-      <Layout onCategorySelect={(id, name) => setSelected({ id, name })}>
+      <Layout onNewChat={() => setSelected(null)}>
         {selected ? (
           <ErrorBoundary>
             <ChatWindowContainer
               key={selected.id}
               categoryId={selected.id}
               categoryName={selected.name}
+              onBack={() => setSelected(null)}
             />
           </ErrorBoundary>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-gray-600">
-            {localizationService.get("SelectCategory")}
-          </div>
+          <HomeScreen onSelect={(id, name) => setSelected({ id, name })} />
         )}
       </Layout>
     </div>

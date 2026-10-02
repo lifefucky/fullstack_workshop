@@ -69,8 +69,9 @@ export const chatApi = createApi({
     // Получить список моделей с бэкенда
     getModels: build.query<
       {
-        text_models: Array<{ brand: string; model_id: string }>;
-        code_models: Array<{ brand: string; model_id: string }>;
+        text_models: Array<{ brand: string; model_id: string; name?: string }>;
+        code_models: Array<{ brand: string; model_id: string; name?: string }>;
+        image_models?: Array<{ brand: string; model_id: string; name?: string }>;
       },
       void
     >({

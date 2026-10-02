@@ -75,7 +75,7 @@ const BaseForm: React.FC<BaseFormProps> = ({ type, onClose }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl text-gray-500 font-bold">
+      <h2 className="text-xl font-bold text-ink">
         {resetMode
           ? localizationService.get("resetPassword")
           : type === "register"
@@ -85,13 +85,13 @@ const BaseForm: React.FC<BaseFormProps> = ({ type, onClose }) => {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
-          <label className="block text-sm text-gray-500 font-medium">Email</label>
+          <label className="block text-sm font-medium text-mute">Email</label>
           <input
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
-            className="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-gray-500 bg-gray-100"
+            className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-ink outline-none focus:border-accent"
             placeholder="your@email.com"
           />
         </div>
@@ -99,7 +99,7 @@ const BaseForm: React.FC<BaseFormProps> = ({ type, onClose }) => {
         {!resetMode && (
           <>
             <div>
-              <label className="block text-sm text-gray-500 font-medium">
+              <label className="block text-sm font-medium text-mute">
                 {localizationService.get("password")}
               </label>
               <input
@@ -107,7 +107,7 @@ const BaseForm: React.FC<BaseFormProps> = ({ type, onClose }) => {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
-                className="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-gray-500 bg-gray-100"
+                className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-ink outline-none focus:border-accent"
                 placeholder="••••••••"
               />
             </div>
@@ -115,7 +115,7 @@ const BaseForm: React.FC<BaseFormProps> = ({ type, onClose }) => {
             {type === "register" && (
               <>
                 <div>
-                  <label className="block text-sm text-gray-500 font-medium">
+                  <label className="block text-sm font-medium text-mute">
                     {localizationService.get("confirmPassword")}
                   </label>
                   <input
@@ -123,12 +123,12 @@ const BaseForm: React.FC<BaseFormProps> = ({ type, onClose }) => {
                     value={confirmPassword}
                     onChange={e => setConfirmPassword(e.target.value)}
                     required
-                    className="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-gray-500 bg-gray-100"
+                    className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-ink outline-none focus:border-accent"
                     placeholder="••••••••"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-500 font-medium">
+                  <label className="block text-sm font-medium text-mute">
                     {localizationService.get("name")}
                   </label>
                   <input
@@ -136,7 +136,7 @@ const BaseForm: React.FC<BaseFormProps> = ({ type, onClose }) => {
                     value={name}
                     onChange={e => setName(e.target.value)}
                     required
-                    className="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-gray-500 bg-gray-100"
+                    className="mt-1 w-full rounded-xl border border-line bg-surface px-3 py-2 text-ink outline-none focus:border-accent"
                     placeholder={localizationService.get("yourName")}
                   />
                 </div>
@@ -149,7 +149,7 @@ const BaseForm: React.FC<BaseFormProps> = ({ type, onClose }) => {
 
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="rounded-xl bg-accent px-4 py-2 text-white hover:bg-blue-600"
         >
           {resetMode
             ? localizationService.get("sendResetLink")
@@ -161,7 +161,7 @@ const BaseForm: React.FC<BaseFormProps> = ({ type, onClose }) => {
 
       <div className="flex flex-col gap-2">
         {!resetMode && (
-          <button onClick={() => setResetMode(true)} className="text-blue-500 hover:underline">
+          <button onClick={() => setResetMode(true)} className="text-accent hover:underline">
             {localizationService.get("forgotPassword")}
           </button>
         )}
@@ -173,7 +173,7 @@ const BaseForm: React.FC<BaseFormProps> = ({ type, onClose }) => {
           {localizationService.get("signInWithGoogle")}
         </button>
 
-        <button onClick={onClose} className="text-gray-500 hover:underline">
+        <button onClick={onClose} className="text-mute hover:underline">
           {localizationService.get("close")}
         </button>
       </div>

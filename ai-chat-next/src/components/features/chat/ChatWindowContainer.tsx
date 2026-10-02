@@ -12,7 +12,7 @@ import { localizationService } from "@/services/localizationService";
 import { ChatWindowView } from "./ChatWindowViews/ChatWindowView";
 import { useModels } from "@/hooks/useModels";
 
-const ChatWindowContainer: FC<ChatWindowProps> = ({ categoryId, categoryName }) => {
+const ChatWindowContainer: FC<ChatWindowProps> = ({ categoryId, categoryName, onBack }) => {
   const dispatch = useDispatch<AppDispatch>();
   const session = useSession();
   const isDemoCategory = demoCategoryIds.includes(categoryId);
@@ -127,7 +127,7 @@ const ChatWindowContainer: FC<ChatWindowProps> = ({ categoryId, categoryName }) 
 
   if (session.data && isDemo) {
     return (
-      <div className="flex-1 flex items-center justify-center text-gray-600">
+      <div className="flex flex-1 items-center justify-center text-mute">
         {localizationService.get("SelectCategory")}
       </div>
     );
@@ -156,6 +156,7 @@ const ChatWindowContainer: FC<ChatWindowProps> = ({ categoryId, categoryName }) 
       scrollToBottom={scrollToBottom}
       topRef={topRef}
       bottomRef={bottomRef}
+      onBack={onBack}
     />
   );
 };

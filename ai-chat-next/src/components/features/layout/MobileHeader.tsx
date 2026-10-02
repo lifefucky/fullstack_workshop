@@ -6,21 +6,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { showNotification } from "@/reducers/notificationReducer";
 import { AppDispatch, RootState } from "@/store/store";
 import { languageActions } from "@/reducers/languageReducer";
-import { modelActions } from "@/reducers/modelReducer";
 import { localizationService } from "@/services/localizationService";
 import { useUserSession } from "@/hooks/useUserSession";
 import { MobileHeaderView } from "./Views/MobileHeaderView";
+import { useModelControls } from "./useModelControls";
 
 export interface MobileHeaderProps {
-  onMenuToggle(): void;
-  modelType: ModelType;
-  selectedModel: string;
+  onNewChat: () => void;
 }
 
-export const MobileHeader: FC<MobileHeaderProps> = ({ onMenuToggle, modelType, selectedModel }) => {
+export const MobileHeader: FC<MobileHeaderProps> = ({ onNewChat }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const availableModels = useSelector((state: RootState) => state.availableModels);
-  const { session, status, isLoading } = useUserSession();
+  const currentLanguage = useSelector((state: RootState) => state.language.current);
+  const { session, status, isLoading, userName } = useUserSession();
+  const model = useModelControls();
   const [, setIsRefreshing] = useState(false);
 
   useEffect(() => {
@@ -30,18 +29,6 @@ export const MobileHeader: FC<MobileHeaderProps> = ({ onMenuToggle, modelType, s
     }
   }, [session, dispatch]);
 
-  const handleLanguageChange = (lang: "ru" | "en") => {
-    dispatch(languageActions.setLanguage(lang));
-  };
-
-  const handleModelTypeChange = (type: ModelType) => {
-    dispatch(modelActions.setModelType(type));
-  };
-
-  const handleModelChange = (modelId: string) => {
-    dispatch(modelActions.setModel(modelId));
-  };
-
   const handleRefresh = () => {
     setIsRefreshing(true);
     window.location.reload();
@@ -49,24 +36,26 @@ export const MobileHeader: FC<MobileHeaderProps> = ({ onMenuToggle, modelType, s
 
   if (isLoading || status === "loading") {
     return (
-      <header className="hidden md:flex items-center justify-between p-4 bg-gray-800 text-white">
-        <div className="animate-pulse">Загрузка...</div>
+      <header className="flex items-center px-4 py-3 text-sm text-mute md:hidden">
+        {localizationService.get("LoadingCategories")}
       </header>
     );
   }
 
   return (
     <MobileHeaderView
-      onMenuToggle={onMenuToggle}
-      modelType={modelType}
-      selectedModel={selectedModel}
-      onLanguageChange={handleLanguageChange}
-      onModelTypeChange={handleModelTypeChange}
-      onModelChange={handleModelChange}
+      onNewChat={onNewChat}
+      currentLanguage={currentLanguage}
+      onLanguageChange={lang => dispatch(languageActions.setLanguage(lang))}
       session={session}
+      userName={userName}
       status={status}
       handleRefresh={handleRefresh}
-      availableModels={availableModels}
+      modelType={model.modelType}
+      selectedModel={model.selectedModel}
+      availableModels={model.availableModels}
+      onModelTypeChange={model.onModelTypeChange}
+      onModelChange={model.onModelChange}
     />
   );
 };

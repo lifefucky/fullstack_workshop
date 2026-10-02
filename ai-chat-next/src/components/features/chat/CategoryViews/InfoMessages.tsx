@@ -11,7 +11,7 @@ export default function InfoMessages({ type }: InfoMessagesProps) {
 
   return (
     <div
-      className="space-y-3 text-green-500 text-sm [&_a]:underline [&_a:hover]:text-green-600"
+      className="space-y-3 text-sm text-ink [&_a]:text-accent [&_a]:underline"
       dangerouslySetInnerHTML={{
         __html: messages.map(m => `<p key="${m.id}">${m.text}</p>`).join(""),
       }}
