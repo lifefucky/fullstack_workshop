@@ -1,6 +1,4 @@
 // src/data/ModelOptions.ts
-export type ModelType = "text" | "code" | "image";
-
 export const MODEL_OPTIONS: Record<ModelType, { id: string; name: string }[]> = {
   text: [
     { id: "deepseek_qwen3", name: "DeepSeek Qwen3" },
