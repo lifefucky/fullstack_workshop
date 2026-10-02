@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 from decouple import config, Csv
 from datetime import timedelta
 from pathlib import Path
-import cloudinary
 
 SECRET_KEY = config("DJANGO_SECRET_KEY")
 DJANGO_ENV = config('DJANGO_ENV', default='local')
@@ -211,14 +210,3 @@ CORS_ALLOW_HEADERS = [
     'Cache-Control',
 ]
 
-_cloud_name = config('CLOUDINARY_CLOUD_NAME', default='')
-_cloud_key = config('CLOUDINARY_API_KEY', default='')
-_cloud_secret = config('CLOUDINARY_API_SECRET', default='')
-
-if _cloud_name and _cloud_key and _cloud_secret:
-    cloudinary.config(
-        cloud_name=_cloud_name,
-        api_key=_cloud_key,
-        api_secret=_cloud_secret,
-        secure=True,
-    )

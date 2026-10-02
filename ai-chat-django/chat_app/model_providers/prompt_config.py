@@ -6,8 +6,16 @@ TEXT_DEFAULT_SYSTEMS = {
 TEXT_TEMPERATURE = 0.7
 
 CODE_DEFAULT_SYSTEMS = {
-    "en": "You are an AI assistant for code generation. Write clear, concise code with explanations.",
-    "ru": "Ты — AI-ассистент для генерации кода. Пиши понятный, краткий код с пояснениями.",
+    "en": (
+        "You are an AI assistant for code generation. "
+        "Put the code in a fenced markdown block with a language tag, for example ```python. "
+        "Short explanations go before or after the block, not instead of it."
+    ),
+    "ru": (
+        "Ты — AI-ассистент для генерации кода. "
+        "Код пиши в markdown-блоке с языком, например ```python. "
+        "Короткие пояснения — до или после блока, а не вместо кода."
+    ),
 }
 
 CODE_TEMPERATURE = 0.3

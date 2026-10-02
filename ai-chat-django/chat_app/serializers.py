@@ -77,7 +77,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         )
 
         if model_type == "image":
-            image_url, error = query_flux_image(prompt_text)
+            image_url, error = query_flux_image(prompt_text, model_name)
             if error:
                 return Response({"error": error}, status=400)
 

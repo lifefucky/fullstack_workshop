@@ -1,37 +1,57 @@
-from collections import defaultdict
 from .api import fetch_models, is_model_free
+from ..image_models import list_image_models
 
-BAD_HINTS = ("-coder", "vl-", "vl_", "vision")  # лёгкая зачистка «подозрительных» id
+CODE_HINTS = ("coder", "-code", "code-", "/code", " code")
+
+
+def _outputs_text_only(model: dict) -> bool:
+    outputs = (model.get("architecture") or {}).get("output_modalities") or ["text"]
+    return outputs == ["text"]
+
+
+def _is_code_model(model: dict) -> bool:
+    label = f"{model.get('id', '')} {model.get('name') or ''}".lower()
+    return any(hint in label for hint in CODE_HINTS)
+
+
+def _entry(model: dict) -> dict:
+    model_id = model["id"]
+    return {
+        "brand": model_id.split("/")[0],
+        "model_id": model_id,
+        "name": model.get("name") or model_id.split("/")[-1],
+    }
+
 
 def get_top_models() -> dict:
-    """Берём последние (предположительно свежие) free-модели по каждому бренду."""
+    """Бесплатные текстовые модели. Код — только модели с code в имени, не музыка и не картинки."""
     models = fetch_models()
-    free_models = [m for m in models if is_model_free(m)]
+    chat_models = [
+        model
+        for model in models
+        if is_model_free(model)
+        and _outputs_text_only(model)
+        and "content-safety" not in model["id"]
+        and not model["id"].startswith("openrouter/")
+    ]
 
-    brand_groups = defaultdict(list)
-    for m in free_models:
-        mid = m["id"]
-        brand = mid.split("/")[0].lower()     # ← бренд снова корректный
-        brand_groups[brand].append(mid)       # порядок сохраняем как на витрине
+    code_models = [_entry(model) for model in chat_models if _is_code_model(model)]
 
-    # Берём ТОП-10 брендов по числу моделей (как было)
-    top = sorted(brand_groups.items(), key=lambda x: len(x[1]), reverse=True)[:10]
-
-    # Для каждого бренда выбираем ПОСЛЕДНЮЮ free-модель (часто самая «живая»)
-    def pick_latest(ids: list[str]) -> str:
-        # берём с конца первый id, который не похож на code/vl/vision (очень лёгкий фильтр)
-        for mid in reversed(ids):
-            low = mid.lower()
-            if not any(h in low for h in BAD_HINTS):
-                return mid
-        return ids[-1]  # fallback — самый последний
-
-    # Разделение на text/code: половина брендов под code, половина под text (условно)
-    split_idx = max(1, len(top) // 2)
-    code_brands = top[:split_idx]
-    text_brands = top[split_idx:]
+    seen_brands = set()
+    text_models = []
+    for model in chat_models:
+        if _is_code_model(model):
+            continue
+        brand = model["id"].split("/")[0].lower()
+        if brand in seen_brands:
+            continue
+        seen_brands.add(brand)
+        text_models.append(_entry(model))
+        if len(text_models) == 10:
+            break
 
     return {
-        "code_models": [{"brand": b, "model_id": pick_latest(ids)} for b, ids in code_brands],
-        "text_models": [{"brand": b, "model_id": pick_latest(ids)} for b, ids in text_brands],
+        "code_models": code_models,
+        "text_models": text_models,
+        "image_models": list_image_models(),
     }

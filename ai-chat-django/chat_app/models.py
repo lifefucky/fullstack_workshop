@@ -57,8 +57,8 @@ class GeneratedImage(models.Model):
     file = models.ImageField(upload_to='generated/')
     prompt = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    source_url = models.URLField(null=True, blank=True)  # Оригинальный URL Together.ai
-    url = models.URLField(max_length=500, null=True, blank=True)  # Cloudinary URL
+    source_url = models.URLField(null=True, blank=True)  # Оригинальный URL провайдера
+    url = models.URLField(max_length=500, null=True, blank=True)  # URL ImageKit
 
     def __str__(self):
         return f"Image for: {self.prompt[:50]}..."
